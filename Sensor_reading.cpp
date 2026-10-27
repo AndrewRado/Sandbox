@@ -3,7 +3,7 @@
 
 enum class SensorStatus {
     OK,
-    FAULT,            // Sensor fail
+    FAULT,             // Sensor fail
     ABOVE_UPPER_LIMIT, // Value above limit
     BELOW_LOWER_LIMIT  // Value below limit
 };
@@ -80,6 +80,14 @@ public:
         }
 
         outRaw = raw;
+
+        SensorStatus rawStatus = validatePressure(raw);
+        if (rawStatus != SensorStatus::OK) {
+            outStatus = rawStatus;
+            outFiltered = historyBuffer.getAverage();
+            return;
+        }
+
         historyBuffer.push(raw);
         outFiltered = historyBuffer.getAverage();
         outStatus = validatePressure(outFiltered);
@@ -135,7 +143,6 @@ int main() {
 
     float rawSPI = 0, filteredSPI = 0;
     SensorStatus statusSPI = SensorStatus::OK;
-
 
     const int TOTAL_STEPS = 4;
     // Loop to poll sensors step-by-step and test validation boundaries & faults
