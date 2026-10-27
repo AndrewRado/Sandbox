@@ -47,6 +47,7 @@ public:
     }
 };
 
+//Abstract Sensor class
 class PressureSensor {
 protected:
     RingBuffer historyBuffer;
@@ -105,6 +106,7 @@ private:
 
 protected:
     bool readRawData(float& rawPressure) override {
+		//low level sensor reading mock
         rawPressure = testData[stepCount % TEST_DATA_SIZE];
         stepCount++;
         return true;
@@ -127,7 +129,7 @@ protected:
             stepCount++;
             return false; // Hardware read failure
         }
-
+		//low level sensor reading mock
         rawPressure = testData[stepCount % TEST_DATA_SIZE];
         stepCount++;
         return true;
